@@ -14,3 +14,13 @@ insert into products(itemID, productName, departmentName, price, stockQTY)
 values(1, "shampoo", "beauty", 7.99, 25);
 
 select * from products;
+
+
+        res.forEach(row =>{
+            var values = [
+                [row.itemID,
+                row.productName,
+                row.price]
+            ];
+        console.table(['ID', 'Name', 'Price'], values);  
+        })

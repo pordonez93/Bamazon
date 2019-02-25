@@ -1,14 +1,12 @@
 var mysql = require('mysql');
 var inquirer = require('inquirer');
+var cTable = require('console.table');
 
 var connection = mysql.createConnection({
     host: 'localhost',
-
     user: 'root',
-
     password: 'guate@09',
     database: 'bamazondb',
-
 });
 
 connection.connect(function(err){
@@ -19,12 +17,15 @@ connection.connect(function(err){
 function start(){
     connection.query('SELECT * FROM products', function (err, res){
         if (err) throw err;
-        res.forEach(row =>{
-            console.log(`
-            ID: ${row.itemID}
-            Name: ${row.productName}
-            Price: ${row.price}`);
-        });
+        var table=[];
+        for(var i=0; i< res.length; i++){
+            output =
+            [
+                [res[i].itemID], [res[i].productName], [res[i].price]
+             ];
+        table.push(output)
+        }
+        console.table(['ID', 'Name', 'Price'], table);
         questions();
     })
 }
@@ -61,7 +62,7 @@ function newOrder(productID, QTY){
             var totalPrice = QTY * product.price;
             var newQTY = product.stockQTY - QTY;
             var query = 'UPDATE products SET stockQTY = ? where ?';
-            console.log("Product is in stock! Order now complete." + "\r\n" + "Your grand total is: $" + totalPrice);
+            console.log(product.productName + " is in stock! Order now complete." + "\r\n" + "Your grand total is: $" + totalPrice);
             connection.query(
                 query,
                 [newQTY,
